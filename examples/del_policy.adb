@@ -32,8 +32,7 @@ begin
    --  HDR
 
    Hdr.Nlmsg_Flags := Xfrm.NLM_F_REQUEST or Xfrm.NLM_F_ACK;
-   Hdr.Nlmsg_Type  := Xfrm.Xfrm_Msg_Type'Enum_Rep
-     (Xfrm.XFRM_MSG_DELPOLICY);
+   Hdr.Nlmsg_Type  := Xfrm.Xfrm_Msg_Type'Enum_Rep (Xfrm.XFRM_MSG_DELPOLICY);
    Hdr.Nlmsg_Len   := Interfaces.Unsigned_32
      (Xfrm.Nlmsg_Length (Len => xfrm_h.xfrm_userpolicy_id'Object_Size / 8));
 
