@@ -12,3 +12,6 @@ obj/examples/del_policy
 echo -n "Add SA "
 obj/examples/add_sa
 /sbin/ip x s s
+echo -n "Del SA "
+obj/examples/del_sa
+/sbin/ip x s s
