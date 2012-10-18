@@ -1,0 +1,5 @@
+#!/bin/sh
+obj/examples/add_policy
+/sbin/ip x p s
+obj/examples/del_policy
+/sbin/ip x p s
