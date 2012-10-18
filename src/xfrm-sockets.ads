@@ -9,6 +9,9 @@ is
      Anet.Sockets.Netlink.Raw_Socket_Type with private;
    --  Netlink/XFRM socket.
 
+   procedure Init (Socket : in out Xfrm_Socket_Type);
+   --  Initialize given XFRM socket.
+
    procedure Send_Ack
      (Socket : Xfrm_Socket_Type;
       Item   : Ada.Streams.Stream_Element_Array);

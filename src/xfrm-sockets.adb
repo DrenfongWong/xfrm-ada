@@ -10,6 +10,15 @@ is
 
    -------------------------------------------------------------------------
 
+   procedure Init (Socket : in out Xfrm_Socket_Type)
+   is
+   begin
+      Anet.Sockets.Netlink.Raw_Socket_Type (Socket).Init
+        (Protocol => Anet.Sockets.Netlink.Proto_Netlink_Xfrm);
+   end Init;
+
+   -------------------------------------------------------------------------
+
    procedure Send_Ack
      (Socket : Xfrm_Socket_Type;
       Item   : Ada.Streams.Stream_Element_Array)

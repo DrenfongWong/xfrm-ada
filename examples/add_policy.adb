@@ -3,11 +3,10 @@ with Ada.Streams;
 
 with System;
 
-with Interfaces.C.Strings;
+with Interfaces.C;
 with Interfaces.C.Extensions;
 
 with Anet.Constants;
-with Anet.Sockets.Netlink;
 
 with xfrm_h;
 
@@ -93,7 +92,7 @@ begin
    Tmpl.mode     := Xfrm.XFRM_MODE_TRANSPORT;
    Tmpl.family   := 2;
 
-   Sock.Init (Protocol => Anet.Sockets.Netlink.Proto_Netlink_Xfrm);
+   Sock.Init;
    Sock.Bind (Address => 0);
    Sock.Send_Ack (Item => Send_Buffer
                   (Send_Buffer'First .. Ada.Streams.Stream_Element_Offset
