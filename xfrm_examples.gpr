@@ -1,4 +1,3 @@
-with "anet";
 with "xfrm_lib";
 
 project Xfrm_Examples is

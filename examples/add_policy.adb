@@ -11,7 +11,7 @@ with Anet.Sockets.Netlink;
 
 with xfrm_h;
 
-with Xfrm;
+with Xfrm.Sockets;
 
 procedure Add_Policy
 is
@@ -46,7 +46,7 @@ is
    for Tmpl'Address use Tmpl_Addr;
    pragma Import (Ada, Tmpl);
 
-   Sock : Anet.Sockets.Netlink.Raw_Socket_Type;
+   Sock : Xfrm.Sockets.Xfrm_Socket_Type;
 begin
 
    --  HDR
@@ -95,57 +95,8 @@ begin
 
    Sock.Init (Protocol => Anet.Sockets.Netlink.Proto_Netlink_Xfrm);
    Sock.Bind (Address => 0);
-   Sock.Send (Item => Send_Buffer (Send_Buffer'First ..
-                Ada.Streams.Stream_Element_Offset (Send_Hdr.Nlmsg_Len)));
-
-   declare
-      Sender : Anet.Sockets.Netlink.Netlink_Addr_Type;
-      Buffer : Ada.Streams.Stream_Element_Array (1 .. 512);
-      Last   : Ada.Streams.Stream_Element_Offset;
-   begin
-      Sock.Receive (Src  => Sender,
-                    Data => Buffer,
-                    Last => Last);
-      Ada.Text_IO.Put_Line ("Received reply from pid" & Sender'Img
-                            & " (" & Last'Img & " bytes )");
-      declare
-         Recv_Buffer : Ada.Streams.Stream_Element_Array
-           := Buffer (Buffer'First .. Last);
-         Recv_Hdr    : aliased Xfrm.Nlmsghdr_Type;
-         for Recv_Hdr'Address use Recv_Buffer'Address;
-      begin
-         if not Xfrm.Nlmsg_Ok (Msg => Recv_Hdr,
-                               Len => Natural (Last))
-         then
-            Ada.Text_IO.Put_Line ("Invalid reply from kernel");
-            return;
-         end if;
-
-         if Recv_Hdr.Nlmsg_Type = Xfrm.NLMSG_ERROR then
-            declare
-               use type Interfaces.C.int;
-
-               function C_Strerror
-                 (Errnum : Interfaces.C.int)
-                  return Interfaces.C.Strings.chars_ptr;
-               pragma Import (C, C_Strerror, "strerror");
-
-               Err_Addr : constant System.Address
-                 := Xfrm.Nlmsg_Data (Msg => Recv_Hdr'Access);
-               Err      : Xfrm.Nlmsgerr_Type;
-               for Err'Address use Err_Addr;
-            begin
-               if Err.Error /= 0 then
-                  Ada.Text_IO.Put_Line
-                    (Interfaces.C.Strings.Value
-                       (C_Strerror (Errnum => -Err.Error)));
-               else
-                  Ada.Text_IO.Put_Line ("OK");
-               end if;
-            end;
-         else
-            Ada.Text_IO.Put_Line ("Request not acknowledged");
-         end if;
-      end;
-   end;
+   Sock.Send_Ack (Item => Send_Buffer
+                  (Send_Buffer'First .. Ada.Streams.Stream_Element_Offset
+                     (Send_Hdr.Nlmsg_Len)));
+   Ada.Text_IO.Put_Line ("OK");
 end Add_Policy;
