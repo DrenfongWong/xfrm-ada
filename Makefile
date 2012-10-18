@@ -7,7 +7,7 @@ GPR_FILES = gnat/*.gpr
 THINDIR = thin
 DUMMY  := $(shell mkdir -p $(THINDIR))
 
-SRC_INCLUDE = /usr/include/linux/xfrm.h
+SRC_INCLUDE = include/xfrm.h
 
 BUILD_OPTS = -p
 
