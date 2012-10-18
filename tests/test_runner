@@ -1,5 +1,14 @@
 #!/bin/sh
+
+# policy
+echo -n "Add policy "
 obj/examples/add_policy
 /sbin/ip x p s
+echo -n "Del policy "
 obj/examples/del_policy
 /sbin/ip x p s
+
+# SA
+echo -n "Add SA "
+obj/examples/add_sa
+/sbin/ip x s s
