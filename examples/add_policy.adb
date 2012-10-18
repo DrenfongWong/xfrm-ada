@@ -22,19 +22,19 @@ is
 
    XFRM_INF : constant Interfaces.C.Extensions.unsigned_long_long := not 0;
 
-   Send_Buffer : Netlink_Buffer_Type := (others => 0);
-   Send_Hdr    : aliased Xfrm.Nlmsghdr_Type;
-   for Send_Hdr'Address use Send_Buffer'Address;
+   Buffer : Netlink_Buffer_Type := (others => 0);
+   Hdr    : aliased Xfrm.Nlmsghdr_Type;
+   for Hdr'Address use Buffer'Address;
 
    Policy_Addr : constant System.Address
-     := Xfrm.Nlmsg_Data (Msg => Send_Hdr'Access);
+     := Xfrm.Nlmsg_Data (Msg => Hdr'Access);
    Policy      : xfrm_h.xfrm_userpolicy_info;
    for Policy'Address use Policy_Addr;
    pragma Import (Ada, Policy);
 
    Rta_Addr : constant System.Address
      := Xfrm.Nlmsg_Data
-       (Msg => Send_Hdr'Access,
+       (Msg => Hdr'Access,
         Len => xfrm_h.xfrm_userpolicy_info'Object_Size / 8);
    Rta      : aliased Xfrm.Rtattr_Type;
    for Rta'Address use Rta_Addr;
@@ -50,10 +50,10 @@ begin
 
    --  HDR
 
-   Send_Hdr.Nlmsg_Flags := Xfrm.NLM_F_REQUEST or Xfrm.NLM_F_ACK;
-   Send_Hdr.Nlmsg_Type  := Xfrm.Xfrm_Msg_Type'Enum_Rep
+   Hdr.Nlmsg_Flags := Xfrm.NLM_F_REQUEST or Xfrm.NLM_F_ACK;
+   Hdr.Nlmsg_Type  := Xfrm.Xfrm_Msg_Type'Enum_Rep
      (Xfrm.XFRM_MSG_NEWPOLICY);
-   Send_Hdr.Nlmsg_Len   := Interfaces.Unsigned_32
+   Hdr.Nlmsg_Len   := Interfaces.Unsigned_32
      (Xfrm.Nlmsg_Length (Len => xfrm_h.xfrm_userpolicy_info'Object_Size / 8));
 
    --  Policy
@@ -74,13 +74,11 @@ begin
 
    --  RTA
 
-   Rta.Rta_Type := xfrm_h.xfrm_attr_type_t'Pos (xfrm_h.XFRMA_TMPL);
-   Rta.Rta_Len  := Interfaces.C.unsigned_short
+   Rta.Rta_Type  := xfrm_h.xfrm_attr_type_t'Pos (xfrm_h.XFRMA_TMPL);
+   Rta.Rta_Len   := Interfaces.C.unsigned_short
      (Xfrm.Rta_Length (Len => xfrm_h.xfrm_user_tmpl'Object_Size / 8));
-
-   Send_Hdr.Nlmsg_Len := Send_Hdr.Nlmsg_Len + Interfaces.Unsigned_32
-     (Xfrm.Align (Len => Xfrm.Rta_Length
-                  (Len => xfrm_h.xfrm_user_tmpl'Object_Size / 8)));
+   Hdr.Nlmsg_Len := Hdr.Nlmsg_Len + Interfaces.Unsigned_32
+     (Xfrm.Align (Len => Positive (Rta.Rta_Len)));
 
    --  Template
 
@@ -94,8 +92,8 @@ begin
 
    Sock.Init;
    Sock.Bind (Address => 0);
-   Sock.Send_Ack (Item => Send_Buffer
-                  (Send_Buffer'First .. Ada.Streams.Stream_Element_Offset
-                     (Send_Hdr.Nlmsg_Len)));
+   Sock.Send_Ack (Item => Buffer
+                  (Buffer'First .. Ada.Streams.Stream_Element_Offset
+                     (Hdr.Nlmsg_Len)));
    Ada.Text_IO.Put_Line ("OK");
 end Add_Policy;

@@ -16,12 +16,12 @@ is
 
    subtype Netlink_Buffer_Type is Ada.Streams.Stream_Element_Array (1 .. 512);
 
-   Send_Buffer : Netlink_Buffer_Type := (others => 0);
-   Send_Hdr    : aliased Xfrm.Nlmsghdr_Type;
-   for Send_Hdr'Address use Send_Buffer'Address;
+   Buffer : Netlink_Buffer_Type := (others => 0);
+   Hdr    : aliased Xfrm.Nlmsghdr_Type;
+   for Hdr'Address use Buffer'Address;
 
    Policy_Id_Addr : constant System.Address
-     := Xfrm.Nlmsg_Data (Msg => Send_Hdr'Access);
+     := Xfrm.Nlmsg_Data (Msg => Hdr'Access);
    Policy_Id      : xfrm_h.xfrm_userpolicy_id;
    for Policy_Id'Address use Policy_Id_Addr;
    pragma Import (Ada, Policy_Id);
@@ -31,10 +31,10 @@ begin
 
    --  HDR
 
-   Send_Hdr.Nlmsg_Flags := Xfrm.NLM_F_REQUEST or Xfrm.NLM_F_ACK;
-   Send_Hdr.Nlmsg_Type  := Xfrm.Xfrm_Msg_Type'Enum_Rep
+   Hdr.Nlmsg_Flags := Xfrm.NLM_F_REQUEST or Xfrm.NLM_F_ACK;
+   Hdr.Nlmsg_Type  := Xfrm.Xfrm_Msg_Type'Enum_Rep
      (Xfrm.XFRM_MSG_DELPOLICY);
-   Send_Hdr.Nlmsg_Len   := Interfaces.Unsigned_32
+   Hdr.Nlmsg_Len   := Interfaces.Unsigned_32
      (Xfrm.Nlmsg_Length (Len => xfrm_h.xfrm_userpolicy_id'Object_Size / 8));
 
    --  Policy ID
@@ -47,8 +47,8 @@ begin
 
    Sock.Init;
    Sock.Bind (Address => 0);
-   Sock.Send_Ack (Item => Send_Buffer
-                  (Send_Buffer'First .. Ada.Streams.Stream_Element_Offset
-                     (Send_Hdr.Nlmsg_Len)));
+   Sock.Send_Ack (Item => Buffer
+                  (Buffer'First .. Ada.Streams.Stream_Element_Offset
+                     (Hdr.Nlmsg_Len)));
    Ada.Text_IO.Put_Line ("OK");
 end Del_Policy;
