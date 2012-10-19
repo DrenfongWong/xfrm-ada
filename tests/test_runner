@@ -4,10 +4,10 @@
 echo "-[Policy]---------------------------"
 echo
 echo -n "Add policy "
-obj/examples/add_policy
+obj/tests/add_policy
 /sbin/ip x p s
 echo -n "Del policy "
-obj/examples/del_policy
+obj/tests/del_policy
 /sbin/ip x p s
 echo
 
@@ -15,24 +15,24 @@ echo "-[State]----------------------------"
 echo
 # SA
 echo -n "Add SA "
-obj/examples/add_sa
+obj/tests/add_sa
 /sbin/ip x s s
 echo -n "Del SA "
-obj/examples/del_sa
+obj/tests/del_sa
 /sbin/ip x s s
 echo
 
 echo "-[Flush]----------------------------"
 echo
 echo -n "Add policy "
-obj/examples/add_policy
+obj/tests/add_policy
 /sbin/ip x p s
 echo -n "Flush SPD "
-obj/examples/flush_policies
+obj/tests/flush_policies
 echo
 echo -n "Add SA "
-obj/examples/add_sa
+obj/tests/add_sa
 /sbin/ip x s s
 echo -n "Flush SAD "
-obj/examples/flush_states
+obj/tests/flush_states
 echo

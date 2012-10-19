@@ -20,11 +20,10 @@ $(THINDIR)/xfrm_h.ads : $(SRC_INCLUDE)
 	cp $(SRC_INCLUDE) $(THINDIR)
 	(cd thin && g++ -fdump-ada-spec xfrm.h)
 
-tests : examples
+tests : xfrm_tests
 	@sudo tests/test_runner
 
-examples: xfrm_examples
-xfrm_examples: xfrm_lib
+xfrm_tests: xfrm_lib
 	@gprbuild $(BUILD_OPTS) -P$@
 
 install: install_lib install_static
@@ -46,4 +45,4 @@ clean:
 	@rm -rf $(OBJDIR)
 	@rm -rf $(LIBDIR)
 
-.PHONY: examples
+.PHONY: tests
