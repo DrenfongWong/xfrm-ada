@@ -1,16 +1,7 @@
 with Ada.Text_IO;
-with Ada.Streams;
 
-with System.Storage_Elements;
+with Anet;
 
-with Interfaces.C;
-with Interfaces.C.Extensions;
-
-with Anet.Constants;
-
-with xfrm_h;
-
-with Xfrm.Thin;
 with Xfrm.Sockets;
 
 procedure Add_Sa

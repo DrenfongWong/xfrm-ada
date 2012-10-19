@@ -1,15 +1,5 @@
 with Ada.Text_IO;
-with Ada.Streams;
 
-with System;
-
-with Interfaces.C;
-
-with Anet.Constants;
-
-with xfrm_h;
-
-with Xfrm.Thin;
 with Xfrm.Sockets;
 
 procedure Del_Sa
