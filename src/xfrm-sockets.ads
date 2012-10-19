@@ -31,6 +31,24 @@ is
       Dst    : Anet.IPv4_Addr_Type);
    --  Delete XFRM policy.
 
+   procedure Add_State
+     (Socket  : Xfrm_Socket_Type;
+      Src     : Anet.IPv4_Addr_Type;
+      Dst     : Anet.IPv4_Addr_Type;
+      Reqid   : Positive;
+      Spi     : Positive;
+      Enc_Key : Anet.Byte_Array;
+      Enc_Alg : String;
+      Int_Key : Anet.Byte_Array;
+      Int_Alg : String);
+   --  Add SA with given parameters.
+
+   procedure Delete_State
+     (Socket : Xfrm_Socket_Type;
+      Dst    : Anet.IPv4_Addr_Type;
+      Spi    : Positive);
+   --  Delete SA state with given parameters.
+
    Xfrm_Error : exception;
 
 private
