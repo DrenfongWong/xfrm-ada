@@ -21,7 +21,6 @@ is
    Sock : Xfrm.Sockets.Xfrm_Socket_Type;
 begin
    Sock.Init;
-   Sock.Bind (Address => 0);
    Sock.Add_State
      (Src     => (192, 168, 1, 1),
       Dst     => (192, 168, 2, 1),

@@ -318,6 +318,7 @@ is
    begin
       Anet.Sockets.Netlink.Raw_Socket_Type (Socket).Init
         (Protocol => Anet.Sockets.Netlink.Proto_Netlink_Xfrm);
+      Socket.Bind (Address => 0);
    end Init;
 
    -------------------------------------------------------------------------

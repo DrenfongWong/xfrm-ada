@@ -17,7 +17,6 @@ is
    Sock : Xfrm.Sockets.Xfrm_Socket_Type;
 begin
    Sock.Init;
-   Sock.Bind (Address => 0);
    Sock.Delete_State (Dst => (192, 168, 2, 1),
                       Spi => 123);
 

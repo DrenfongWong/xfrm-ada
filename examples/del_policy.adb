@@ -7,7 +7,6 @@ is
    Sock : Xfrm.Sockets.Xfrm_Socket_Type;
 begin
    Sock.Init;
-   Sock.Bind (Address => 0);
    Sock.Delete_Policy (Src => (192, 168, 1, 1),
                        Dst => (192, 168, 2, 1));
    Ada.Text_IO.Put_Line ("OK");
