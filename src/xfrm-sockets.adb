@@ -242,7 +242,7 @@ is
       Src    : Anet.IPv4_Addr_Type;
       Dst    : Anet.IPv4_Addr_Type)
    is
-      Buffer : Ada.Streams.Stream_Element_Array (1 .. 512) := (others => 0);
+      Buffer : Ada.Streams.Stream_Element_Array (1 .. 80) := (others => 0);
       Hdr    : aliased Nlmsghdr_Type;
       for Hdr'Address use Buffer'Address;
 
@@ -283,7 +283,7 @@ is
       Dst    : Anet.IPv4_Addr_Type;
       Spi    : Positive)
    is
-      Buffer : Ada.Streams.Stream_Element_Array (1 .. 512) := (others => 0);
+      Buffer : Ada.Streams.Stream_Element_Array (1 .. 40) := (others => 0);
       Hdr    : aliased Nlmsghdr_Type;
       for Hdr'Address use Buffer'Address;
 
