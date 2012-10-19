@@ -1,6 +1,6 @@
 with System.Storage_Elements;
 
-package body Xfrm
+package body Xfrm.Thin
 is
 
    -------------------------------------------------------------------------
@@ -136,4 +136,4 @@ is
         and then Rta.Rta_Len <= Interfaces.C.unsigned_short (Len);
    end Rta_Ok;
 
-end Xfrm;
+end Xfrm.Thin;

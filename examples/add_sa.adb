@@ -10,16 +10,16 @@ with Anet.Constants;
 
 with xfrm_h;
 
+with Xfrm.Thin;
 with Xfrm.Sockets;
 
 procedure Add_Sa
 is
 
+   use Xfrm.Thin;
    use type Interfaces.Unsigned_16;
    use type Interfaces.Unsigned_32;
    use type Interfaces.C.unsigned;
-
-   subtype Netlink_Buffer_Type is Ada.Streams.Stream_Element_Array (1 .. 512);
 
    XFRM_INF : constant Interfaces.C.Extensions.unsigned_long_long := not 0;
 
@@ -29,21 +29,19 @@ is
       Len : Interfaces.C.size_t);
    pragma Import (C, C_Memcpy, "memcpy");
 
-   Buffer : Netlink_Buffer_Type := (others => 0);
-   Hdr    : aliased Xfrm.Nlmsghdr_Type;
+   Buffer : Ada.Streams.Stream_Element_Array (1 .. 512) := (others => 0);
+   Hdr    : aliased Nlmsghdr_Type;
    for Hdr'Address use Buffer'Address;
 
-   Sa_Addr : constant System.Address
-     := Xfrm.Nlmsg_Data (Msg => Hdr'Access);
+   Sa_Addr : constant System.Address := Nlmsg_Data (Msg => Hdr'Access);
    Sa      : xfrm_h.xfrm_usersa_info;
    for Sa'Address use Sa_Addr;
    pragma Import (Ada, Sa);
 
    Enc_Rta_Addr : constant System.Address
-     := Xfrm.Nlmsg_Data
-       (Msg => Hdr'Access,
-        Len => xfrm_h.xfrm_usersa_info'Object_Size / 8);
-   Enc_Rta      : aliased Xfrm.Rtattr_Type;
+     := Nlmsg_Data (Msg => Hdr'Access,
+                    Len => xfrm_h.xfrm_usersa_info'Object_Size / 8);
+   Enc_Rta      : aliased Rtattr_Type;
    for Enc_Rta'Address use Enc_Rta_Addr;
 
    type Byte is mod 2 ** 8;
@@ -62,10 +60,10 @@ begin
 
    --  HDR
 
-   Hdr.Nlmsg_Flags := Xfrm.NLM_F_REQUEST or Xfrm.NLM_F_ACK;
-   Hdr.Nlmsg_Type  := Xfrm.Xfrm_Msg_Type'Enum_Rep (Xfrm.XFRM_MSG_NEWSA);
+   Hdr.Nlmsg_Flags := NLM_F_REQUEST or NLM_F_ACK;
+   Hdr.Nlmsg_Type  := Xfrm_Msg_Type'Enum_Rep (XFRM_MSG_NEWSA);
    Hdr.Nlmsg_Len   := Interfaces.Unsigned_32
-     (Xfrm.Nlmsg_Length (Len => xfrm_h.xfrm_usersa_info'Object_Size / 8));
+     (Nlmsg_Length (Len => xfrm_h.xfrm_usersa_info'Object_Size / 8));
 
    --  SA
 
@@ -88,7 +86,7 @@ begin
 
    Encryption_Algorithm :
    declare
-      Enc_Algo_Addr : constant System.Address := Xfrm.Rta_Data
+      Enc_Algo_Addr : constant System.Address := Rta_Data
         (Rta => Enc_Rta'Access);
       Enc_Algo      : xfrm_h.xfrm_algo;
       for Enc_Algo'Address use Enc_Algo_Addr;
@@ -96,11 +94,10 @@ begin
    begin
       Enc_Rta.Rta_Type := xfrm_h.xfrm_attr_type_t'Pos (xfrm_h.XFRMA_ALG_CRYPT);
       Enc_Rta.Rta_Len  := Interfaces.C.unsigned_short
-        (Xfrm.Rta_Length
-           (Len => xfrm_h.xfrm_algo'Object_Size / 8) + Enc_Key_Len);
+        (Rta_Length (Len => xfrm_h.xfrm_algo'Object_Size / 8) + Enc_Key_Len);
 
       Hdr.Nlmsg_Len := Hdr.Nlmsg_Len + Interfaces.Unsigned_32
-        (Xfrm.Align (Len => Positive (Enc_Rta.Rta_Len)));
+        (Align (Len => Positive (Enc_Rta.Rta_Len)));
 
       Enc_Algo.alg_key_len := Enc_Key_Len * 8;
       Enc_Algo.alg_name (Enc_Algo.alg_name'First .. Enc_Key_Name'Length)
@@ -116,11 +113,11 @@ begin
 
       Int_Rta_Addr : constant System.Address
         := Enc_Rta_Addr + Storage_Offset
-          (Xfrm.Align (Len => Positive (Enc_Rta.Rta_Len)));
-      Int_Rta      : aliased Xfrm.Rtattr_Type;
+          (Align (Len => Positive (Enc_Rta.Rta_Len)));
+      Int_Rta      : aliased Rtattr_Type;
       for Int_Rta'Address use Int_Rta_Addr;
 
-      Int_Algo_Addr : constant System.Address := Xfrm.Rta_Data
+      Int_Algo_Addr : constant System.Address := Rta_Data
         (Rta => Int_Rta'Access);
       Int_Algo      : xfrm_h.xfrm_algo;
       for Int_Algo'Address use Int_Algo_Addr;
@@ -129,11 +126,10 @@ begin
       Int_Rta.Rta_Type := xfrm_h.xfrm_attr_type_t'Pos
         (xfrm_h.XFRMA_ALG_AUTH);
       Int_Rta.Rta_Len  := Interfaces.C.unsigned_short
-        (Xfrm.Rta_Length
-           (Len => xfrm_h.xfrm_algo'Object_Size / 8) + Int_Key_Len);
+        (Rta_Length (Len => xfrm_h.xfrm_algo'Object_Size / 8) + Int_Key_Len);
 
       Hdr.Nlmsg_Len := Hdr.Nlmsg_Len + Interfaces.Unsigned_32
-        (Xfrm.Align (Len => Positive (Int_Rta.Rta_Len)));
+        (Align (Len => Positive (Int_Rta.Rta_Len)));
 
       Int_Algo.alg_key_len := Int_Key_Len * 8;
       Int_Algo.alg_name (Int_Algo.alg_name'First .. Int_Key_Name'Length)

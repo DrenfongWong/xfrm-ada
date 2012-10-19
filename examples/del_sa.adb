@@ -9,21 +9,20 @@ with Anet.Constants;
 
 with xfrm_h;
 
+with Xfrm.Thin;
 with Xfrm.Sockets;
 
 procedure Del_Sa
 is
 
+   use Xfrm.Thin;
    use type Interfaces.Unsigned_16;
 
-   subtype Netlink_Buffer_Type is Ada.Streams.Stream_Element_Array (1 .. 512);
-
-   Buffer : Netlink_Buffer_Type := (others => 0);
-   Hdr    : aliased Xfrm.Nlmsghdr_Type;
+   Buffer : Ada.Streams.Stream_Element_Array (1 .. 512) := (others => 0);
+   Hdr    : aliased Nlmsghdr_Type;
    for Hdr'Address use Buffer'Address;
 
-   Sa_Id_Addr : constant System.Address
-     := Xfrm.Nlmsg_Data (Msg => Hdr'Access);
+   Sa_Id_Addr : constant System.Address := Nlmsg_Data (Msg => Hdr'Access);
    Sa_Id      : xfrm_h.xfrm_usersa_id;
    for Sa_Id'Address use Sa_Id_Addr;
    pragma Import (Ada, Sa_Id);
@@ -33,10 +32,10 @@ begin
 
    --  HDR
 
-   Hdr.Nlmsg_Flags := Xfrm.NLM_F_REQUEST or Xfrm.NLM_F_ACK;
-   Hdr.Nlmsg_Type  := Xfrm.Xfrm_Msg_Type'Enum_Rep (Xfrm.XFRM_MSG_DELSA);
+   Hdr.Nlmsg_Flags := NLM_F_REQUEST or NLM_F_ACK;
+   Hdr.Nlmsg_Type  := Xfrm_Msg_Type'Enum_Rep (XFRM_MSG_DELSA);
    Hdr.Nlmsg_Len   := Interfaces.Unsigned_32
-     (Xfrm.Nlmsg_Length (Len => xfrm_h.xfrm_usersa_id'Object_Size / 8));
+     (Nlmsg_Length (Len => xfrm_h.xfrm_usersa_id'Object_Size / 8));
 
    --  SA ID
 
