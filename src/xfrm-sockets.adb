@@ -28,6 +28,8 @@ is
 
    XFRM_INF : constant Interfaces.C.Extensions.unsigned_long_long := not 0;
 
+   IPSEC_PROTO_ANY : constant := 255;
+
    -------------------------------------------------------------------------
 
    procedure Add_Policy
