@@ -18,6 +18,19 @@ is
    --  Send given data to the XFRM subsystem, wait for ACK from the kernel.
    --  Raises an exception if the result was not OK.
 
+   procedure Add_Policy
+     (Socket : Xfrm_Socket_Type;
+      Src    : Anet.IPv4_Addr_Type;
+      Dst    : Anet.IPv4_Addr_Type;
+      Reqid  : Positive);
+   --  Add XFRM policy.
+
+   procedure Delete_Policy
+     (Socket : Xfrm_Socket_Type;
+      Src    : Anet.IPv4_Addr_Type;
+      Dst    : Anet.IPv4_Addr_Type);
+   --  Delete XFRM policy.
+
    Xfrm_Error : exception;
 
 private
