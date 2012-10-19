@@ -315,6 +315,51 @@ is
 
    -------------------------------------------------------------------------
 
+   procedure Flush_Policies (Socket : Xfrm_Socket_Type)
+   is
+      Buffer : Ada.Streams.Stream_Element_Array (1 .. 16) := (others => 0);
+      Hdr    : aliased Nlmsghdr_Type;
+      for Hdr'Address use Buffer'Address;
+   begin
+      Hdr.Nlmsg_Flags := NLM_F_REQUEST or NLM_F_ACK;
+      Hdr.Nlmsg_Type  := Xfrm_Msg_Type'Enum_Rep (XFRM_MSG_FLUSHPOLICY);
+      Hdr.Nlmsg_Len   := Interfaces.Unsigned_32 (Nlmsg_Length (Len => 0));
+
+      Socket.Send_Ack (Item => Buffer (Buffer'First ..
+                         Ada.Streams.Stream_Element_Offset (Hdr.Nlmsg_Len)));
+   end Flush_Policies;
+
+   -------------------------------------------------------------------------
+
+   procedure Flush_States (Socket : Xfrm_Socket_Type)
+   is
+      Buffer : Ada.Streams.Stream_Element_Array (1 .. 17) := (others => 0);
+      Hdr    : aliased Nlmsghdr_Type;
+      for Hdr'Address use Buffer'Address;
+
+      Flush_Addr : constant System.Address := Nlmsg_Data (Msg => Hdr'Access);
+      Flush      : xfrm_h.xfrm_usersa_flush;
+      for Flush'Address use Flush_Addr;
+      pragma Import (Ada, Flush);
+   begin
+
+      --  HDR
+
+      Hdr.Nlmsg_Flags := NLM_F_REQUEST or NLM_F_ACK;
+      Hdr.Nlmsg_Type  := Xfrm_Msg_Type'Enum_Rep (XFRM_MSG_FLUSHSA);
+      Hdr.Nlmsg_Len   := Interfaces.Unsigned_32
+        (Nlmsg_Length (Len => xfrm_h.xfrm_usersa_flush'Object_Size / 8));
+
+      --  Flush
+
+      Flush.proto := IPSEC_PROTO_ANY;
+
+      Socket.Send_Ack (Item => Buffer (Buffer'First ..
+                         Ada.Streams.Stream_Element_Offset (Hdr.Nlmsg_Len)));
+   end Flush_States;
+
+   -------------------------------------------------------------------------
+
    procedure Init (Socket : in out Xfrm_Socket_Type)
    is
    begin
