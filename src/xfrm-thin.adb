@@ -8,10 +8,9 @@ is
    function Align (Len : Natural) return Natural
    is
       use type Interfaces.Unsigned_32;
-
-      Tmp : Interfaces.Unsigned_32 := Interfaces.Unsigned_32 (Len);
    begin
-      return Natural ((Tmp + ALIGNTO - 1) and not (ALIGNTO - 1));
+      return Natural ((Interfaces.Unsigned_32 (Len) + ALIGNTO - 1)
+                      and not (ALIGNTO - 1));
    end Align;
 
    -------------------------------------------------------------------------
