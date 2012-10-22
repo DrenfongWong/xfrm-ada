@@ -43,7 +43,7 @@ is
      (Socket    : Xfrm_Socket_Type;
       Src       : Anet.IPv4_Addr_Type;
       Dst       : Anet.IPv4_Addr_Type;
-      Reqid     : Positive;
+      Reqid     : Interfaces.Unsigned_32;
       Direction : Direction_Type)
    is
       use type Interfaces.Unsigned_32;
@@ -127,7 +127,7 @@ is
      (Socket        : Xfrm_Socket_Type;
       Src           : Anet.IPv4_Addr_Type;
       Dst           : Anet.IPv4_Addr_Type;
-      Reqid         : Positive;
+      Reqid         : Interfaces.Unsigned_32;
       Spi           : Interfaces.Unsigned_32;
       Enc_Key       : Anet.Byte_Array;
       Enc_Alg       : String;
