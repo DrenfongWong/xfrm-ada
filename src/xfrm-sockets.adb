@@ -167,11 +167,15 @@ is
       C_Memcpy (Dst => Sa.id.daddr.a4'Address,
                 Src => Dst'Address,
                 Len => Dst'Length);
-      Sa.reqid         := Interfaces.C.unsigned (Reqid);
-      Sa.id.spi        := Interfaces.C.unsigned (Spi);
-      Sa.id.proto      := Anet.Constants.IPPROTO_ESP;
-      Sa.family        := 2;
-      Sa.replay_window := 32;
+      Sa.sel.saddr.a4    := Sa.saddr.a4;
+      Sa.sel.prefixlen_s := 32;
+      Sa.sel.daddr.a4    := Sa.id.daddr.a4;
+      Sa.sel.prefixlen_d := 32;
+      Sa.reqid           := Interfaces.C.unsigned (Reqid);
+      Sa.id.spi          := Interfaces.C.unsigned (Spi);
+      Sa.id.proto        := Anet.Constants.IPPROTO_ESP;
+      Sa.family          := 2;
+      Sa.replay_window   := 32;
 
       if Lifetime_Soft /= 0 then
          Sa.lft.soft_add_expires_seconds
