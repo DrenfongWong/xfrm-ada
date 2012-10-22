@@ -13,13 +13,15 @@ is
 begin
    Sock.Init;
    Sock.Add_State
-     (Src     => (192, 168, 1, 1),
-      Dst     => (192, 168, 2, 1),
-      Reqid   => 1,
-      Spi     => 123,
-      Enc_Key => Enc_Key,
-      Enc_Alg => "aes",
-      Int_Key => Int_Key,
-      Int_Alg => "hmac(sha512)");
+     (Src           => (192, 168, 1, 1),
+      Dst           => (192, 168, 2, 1),
+      Reqid         => 1,
+      Spi           => 123,
+      Enc_Key       => Enc_Key,
+      Enc_Alg       => "aes",
+      Int_Key       => Int_Key,
+      Int_Alg       => "hmac(sha512)",
+      Lifetime_Soft => 30,
+      Lifetime_Hard => 60);
    Ada.Text_IO.Put_Line ("OK");
 end Add_Sa;

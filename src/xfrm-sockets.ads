@@ -35,16 +35,20 @@ is
    --  Flush SPD.
 
    procedure Add_State
-     (Socket  : Xfrm_Socket_Type;
-      Src     : Anet.IPv4_Addr_Type;
-      Dst     : Anet.IPv4_Addr_Type;
-      Reqid   : Positive;
-      Spi     : Positive;
-      Enc_Key : Anet.Byte_Array;
-      Enc_Alg : String;
-      Int_Key : Anet.Byte_Array;
-      Int_Alg : String);
-   --  Add SA with given parameters.
+     (Socket        : Xfrm_Socket_Type;
+      Src           : Anet.IPv4_Addr_Type;
+      Dst           : Anet.IPv4_Addr_Type;
+      Reqid         : Positive;
+      Spi           : Positive;
+      Enc_Key       : Anet.Byte_Array;
+      Enc_Alg       : String;
+      Int_Key       : Anet.Byte_Array;
+      Int_Alg       : String;
+      Lifetime_Soft : Natural := 0;
+      Lifetime_Hard : Natural := 0);
+   --  Add SA with given parameters. The lifetime parameters specify the amount
+   --  in seconds of the soft/hard expire timeout of the SA; the default is 0
+   --  (= no timeout).
 
    procedure Delete_State
      (Socket : Xfrm_Socket_Type;

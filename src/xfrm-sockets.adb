@@ -114,15 +114,17 @@ is
    -------------------------------------------------------------------------
 
    procedure Add_State
-     (Socket  : Xfrm_Socket_Type;
-      Src     : Anet.IPv4_Addr_Type;
-      Dst     : Anet.IPv4_Addr_Type;
-      Reqid   : Positive;
-      Spi     : Positive;
-      Enc_Key : Anet.Byte_Array;
-      Enc_Alg : String;
-      Int_Key : Anet.Byte_Array;
-      Int_Alg : String)
+     (Socket        : Xfrm_Socket_Type;
+      Src           : Anet.IPv4_Addr_Type;
+      Dst           : Anet.IPv4_Addr_Type;
+      Reqid         : Positive;
+      Spi           : Positive;
+      Enc_Key       : Anet.Byte_Array;
+      Enc_Alg       : String;
+      Int_Key       : Anet.Byte_Array;
+      Int_Alg       : String;
+      Lifetime_Soft : Natural := 0;
+      Lifetime_Hard : Natural := 0)
    is
       use type Interfaces.Unsigned_32;
       use type Interfaces.C.unsigned;
@@ -164,12 +166,23 @@ is
       Sa.family        := 2;
       Sa.replay_window := 32;
 
+      if Lifetime_Soft /= 0 then
+         Sa.lft.soft_add_expires_seconds
+           := Interfaces.C.Extensions.unsigned_long_long (Lifetime_Soft);
+      else
+         Sa.lft.soft_add_expires_seconds := XFRM_INF;
+      end if;
+      if Lifetime_Hard /= 0 then
+         Sa.lft.hard_add_expires_seconds
+           := Interfaces.C.Extensions.unsigned_long_long (Lifetime_Hard);
+      else
+         Sa.lft.hard_add_expires_seconds := XFRM_INF;
+      end if;
+
       Sa.lft.soft_byte_limit          := XFRM_INF;
       Sa.lft.hard_byte_limit          := XFRM_INF;
       Sa.lft.soft_packet_limit        := XFRM_INF;
       Sa.lft.hard_packet_limit        := XFRM_INF;
-      Sa.lft.soft_add_expires_seconds := XFRM_INF;
-      Sa.lft.hard_add_expires_seconds := XFRM_INF;
       Sa.lft.soft_use_expires_seconds := 0;
       Sa.lft.hard_use_expires_seconds := 0;
 
