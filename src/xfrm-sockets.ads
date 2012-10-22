@@ -54,8 +54,8 @@ is
       Enc_Alg       : String;
       Int_Key       : Anet.Byte_Array;
       Int_Alg       : String;
-      Lifetime_Soft : Natural := 0;
-      Lifetime_Hard : Natural := 0);
+      Lifetime_Soft : Interfaces.Unsigned_64 := 0;
+      Lifetime_Hard : Interfaces.Unsigned_64 := 0);
    --  Add SA with given parameters. The lifetime parameters specify the amount
    --  in seconds of the soft/hard expire timeout of the SA; the default is 0
    --  (= no timeout).

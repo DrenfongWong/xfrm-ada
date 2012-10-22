@@ -133,10 +133,11 @@ is
       Enc_Alg       : String;
       Int_Key       : Anet.Byte_Array;
       Int_Alg       : String;
-      Lifetime_Soft : Natural := 0;
-      Lifetime_Hard : Natural := 0)
+      Lifetime_Soft : Interfaces.Unsigned_64 := 0;
+      Lifetime_Hard : Interfaces.Unsigned_64 := 0)
    is
       use type Interfaces.Unsigned_32;
+      use type Interfaces.Unsigned_64;
       use type Interfaces.C.unsigned;
 
       Buffer : Ada.Streams.Stream_Element_Array (1 .. 512) := (others => 0);
