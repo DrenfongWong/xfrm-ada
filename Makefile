@@ -34,7 +34,7 @@ install_lib: xfrm_lib
 	install -d $(PREFIX)/include/xfrm
 	install -m 644 $(SRCDIR)/*.ad[bs] $(PREFIX)/include/xfrm
 	install -m 644 $(THINDIR)/*.ads $(PREFIX)/include/xfrm
-	install -m 444 $(LIBDIR)/*.ali $(PREFIX)/lib/xfrm
+	install -m 444 $(OBJDIR)/lib/*.ali $(PREFIX)/lib/xfrm
 	install -m 644 $(GPR_FILES) $(PREFIX)/lib/gnat
 
 install_static:

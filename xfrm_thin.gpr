@@ -1,0 +1,18 @@
+project Xfrm_Thin is
+
+   for Source_Dirs use ("thin");
+   for Object_Dir use "obj/lib/";
+
+   Compiler_Switches := ("-gnatVa",
+                         "-gnat05",
+                         "-gnatf",
+                         "-fstack-check",
+                         "-gnato",
+                         "-g");
+
+   package Compiler is
+      for Default_Switches ("ada") use Compiler_Switches;
+   end Compiler;
+
+end Xfrm_Thin;
+
