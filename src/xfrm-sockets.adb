@@ -8,6 +8,7 @@ with Anet.Constants;
 with xfrm_h;
 
 with Xfrm.Thin;
+with Xfrm.Byte_Swapping;
 
 package body Xfrm.Sockets
 is
@@ -176,7 +177,8 @@ is
       Sa.sel.daddr.a4    := Sa.id.daddr.a4;
       Sa.sel.prefixlen_d := 32;
       Sa.reqid           := C.unsigned (Reqid);
-      Sa.id.spi          := C.unsigned (Spi);
+      Sa.id.spi          := C.unsigned (Byte_Swapping.Host_To_Network
+        (Input => Spi));
       Sa.id.proto        := Anet.Constants.IPPROTO_ESP;
       Sa.family          := 2;
       Sa.replay_window   := 32;
@@ -338,7 +340,8 @@ is
                 Src => Dst'Address,
                 Len => Dst'Length);
       Sa_Id.proto    := Anet.Constants.IPPROTO_ESP;
-      Sa_Id.spi      := C.unsigned (Spi);
+      Sa_Id.spi      := C.unsigned (Byte_Swapping.Host_To_Network
+        (Input => Spi));
       Sa_Id.family   := 2;
 
       Socket.Send_Ack (Err_Prefix => "Unable to delete state",
