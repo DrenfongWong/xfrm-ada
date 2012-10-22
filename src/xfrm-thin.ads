@@ -161,4 +161,8 @@ is
 
    XFRM_MODE_TRANSPORT : constant := 0;
 
+   XFRM_POLICY_IN  : constant := 0;
+   XFRM_POLICY_OUT : constant := 1;
+   XFRM_POLICY_FWD : constant := 2;
+
 end Xfrm.Thin;

@@ -5,6 +5,12 @@ with Anet.Sockets.Netlink;
 package Xfrm.Sockets
 is
 
+   type Direction_Type is
+     (Direction_In,
+      Direction_Fwd,
+      Direction_Out);
+   --  Policy directions.
+
    type Xfrm_Socket_Type is new
      Anet.Sockets.Netlink.Raw_Socket_Type with private;
    --  Netlink/XFRM socket.
@@ -19,16 +25,18 @@ is
    --  Raises an exception if the result was not OK.
 
    procedure Add_Policy
-     (Socket : Xfrm_Socket_Type;
-      Src    : Anet.IPv4_Addr_Type;
-      Dst    : Anet.IPv4_Addr_Type;
-      Reqid  : Positive);
-   --  Add XFRM policy.
+     (Socket    : Xfrm_Socket_Type;
+      Src       : Anet.IPv4_Addr_Type;
+      Dst       : Anet.IPv4_Addr_Type;
+      Reqid     : Positive;
+      Direction : Direction_Type);
+   --  Add XFRM policy with given parameters.
 
    procedure Delete_Policy
-     (Socket : Xfrm_Socket_Type;
-      Src    : Anet.IPv4_Addr_Type;
-      Dst    : Anet.IPv4_Addr_Type);
+     (Socket    : Xfrm_Socket_Type;
+      Src       : Anet.IPv4_Addr_Type;
+      Dst       : Anet.IPv4_Addr_Type;
+      Direction : Direction_Type);
    --  Delete XFRM policy.
 
    procedure Flush_Policies (Socket : Xfrm_Socket_Type);

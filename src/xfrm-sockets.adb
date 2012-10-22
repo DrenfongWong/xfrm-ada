@@ -30,13 +30,19 @@ is
 
    IPSEC_PROTO_ANY : constant := 255;
 
+   Dir_Map : constant array (Direction_Type) of Interfaces.C.unsigned_char
+     := (Direction_In  => Xfrm.Thin.XFRM_POLICY_IN,
+         Direction_Out => Xfrm.Thin.XFRM_POLICY_OUT,
+         Direction_Fwd => Xfrm.Thin.XFRM_POLICY_FWD);
+
    -------------------------------------------------------------------------
 
    procedure Add_Policy
-     (Socket : Xfrm_Socket_Type;
-      Src    : Anet.IPv4_Addr_Type;
-      Dst    : Anet.IPv4_Addr_Type;
-      Reqid  : Positive)
+     (Socket    : Xfrm_Socket_Type;
+      Src       : Anet.IPv4_Addr_Type;
+      Dst       : Anet.IPv4_Addr_Type;
+      Reqid     : Positive;
+      Direction : Direction_Type)
    is
       use type Interfaces.Unsigned_32;
 
@@ -83,6 +89,7 @@ is
       Policy.priority        := 3843;
       Policy.action          := XFRM_POLICY_ALLOW;
       Policy.share           := Xfrm_Share_Type'Pos (XFRM_SHARE_ANY);
+      Policy.dir             := Dir_Map (Direction);
 
       Policy.lft.soft_byte_limit   := XFRM_INF;
       Policy.lft.soft_packet_limit := XFRM_INF;
@@ -251,9 +258,10 @@ is
    -------------------------------------------------------------------------
 
    procedure Delete_Policy
-     (Socket : Xfrm_Socket_Type;
-      Src    : Anet.IPv4_Addr_Type;
-      Dst    : Anet.IPv4_Addr_Type)
+     (Socket    : Xfrm_Socket_Type;
+      Src       : Anet.IPv4_Addr_Type;
+      Dst       : Anet.IPv4_Addr_Type;
+      Direction : Direction_Type)
    is
       Buffer : Ada.Streams.Stream_Element_Array (1 .. 80) := (others => 0);
       Hdr    : aliased Nlmsghdr_Type;
@@ -284,6 +292,7 @@ is
       Policy_Id.sel.family      := 2;
       Policy_Id.sel.prefixlen_d := 32;
       Policy_Id.sel.prefixlen_s := 32;
+      Policy_Id.dir             := Dir_Map (Direction);
 
       Socket.Send_Ack (Item => Buffer (Buffer'First ..
                          Ada.Streams.Stream_Element_Offset (Hdr.Nlmsg_Len)));

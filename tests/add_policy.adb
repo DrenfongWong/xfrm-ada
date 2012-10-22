@@ -8,8 +8,9 @@ is
 begin
    Sock.Init;
    Sock.Add_Policy
-     (Src   => (192, 168, 1, 1),
-      Dst   => (192, 168, 2, 1),
-      Reqid => 1);
+     (Src       => (192, 168, 1, 1),
+      Dst       => (192, 168, 2, 1),
+      Reqid     => 1,
+      Direction => Xfrm.Sockets.Direction_Out);
    Ada.Text_IO.Put_Line ("OK");
 end Add_Policy;
