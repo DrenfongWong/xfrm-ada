@@ -19,10 +19,12 @@ is
    --  Initialize given XFRM socket.
 
    procedure Send_Ack
-     (Socket : Xfrm_Socket_Type;
-      Item   : Ada.Streams.Stream_Element_Array);
+     (Socket     : Xfrm_Socket_Type;
+      Err_Prefix : String;
+      Item       : Ada.Streams.Stream_Element_Array);
    --  Send given data to the XFRM subsystem, wait for ACK from the kernel.
-   --  Raises an exception if the result was not OK.
+   --  Raises an exception with specified error message prefix if the operation
+   --  was not successful.
 
    procedure Add_Policy
      (Socket    : Xfrm_Socket_Type;

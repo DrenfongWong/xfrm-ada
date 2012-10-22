@@ -12,25 +12,27 @@ with Xfrm.Thin;
 package body Xfrm.Sockets
 is
 
+   package C renames Interfaces.C;
+
    use type Interfaces.Unsigned_16;
    use Xfrm.Thin;
 
    function C_Strerror
-     (Errnum : Interfaces.C.int)
-      return Interfaces.C.Strings.chars_ptr;
+     (Errnum : C.int)
+      return C.Strings.chars_ptr;
    pragma Import (C, C_Strerror, "strerror");
 
    procedure C_Memcpy
      (Dst : System.Address;
       Src : System.Address;
-      Len : Interfaces.C.size_t);
+      Len : C.size_t);
    pragma Import (C, C_Memcpy, "memcpy");
 
-   XFRM_INF : constant Interfaces.C.Extensions.unsigned_long_long := not 0;
+   XFRM_INF : constant C.Extensions.unsigned_long_long := not 0;
 
    IPSEC_PROTO_ANY : constant := 255;
 
-   Dir_Map : constant array (Direction_Type) of Interfaces.C.unsigned_char
+   Dir_Map : constant array (Direction_Type) of C.unsigned_char
      := (Direction_In  => Xfrm.Thin.XFRM_POLICY_IN,
          Direction_Out => Xfrm.Thin.XFRM_POLICY_OUT,
          Direction_Fwd => Xfrm.Thin.XFRM_POLICY_FWD);
@@ -99,14 +101,14 @@ is
       --  RTA
 
       Rta.Rta_Type  := xfrm_h.xfrm_attr_type_t'Pos (xfrm_h.XFRMA_TMPL);
-      Rta.Rta_Len   := Interfaces.C.unsigned_short
+      Rta.Rta_Len   := C.unsigned_short
         (Rta_Length (Len => xfrm_h.xfrm_user_tmpl'Object_Size / 8));
       Hdr.Nlmsg_Len := Hdr.Nlmsg_Len + Interfaces.Unsigned_32
         (Align (Len => Positive (Rta.Rta_Len)));
 
       --  Template
 
-      Tmpl.reqid    := Interfaces.C.unsigned (Reqid);
+      Tmpl.reqid    := C.unsigned (Reqid);
       Tmpl.id.proto := Anet.Constants.IPPROTO_ESP;
       Tmpl.aalgos   := not 0;
       Tmpl.ealgos   := not 0;
@@ -114,7 +116,8 @@ is
       Tmpl.mode     := XFRM_MODE_TRANSPORT;
       Tmpl.family   := 2;
 
-      Socket.Send_Ack (Item => Buffer (Buffer'First ..
+      Socket.Send_Ack (Err_Prefix => "Unable to add policy",
+                       Item       => Buffer (Buffer'First ..
                          Ada.Streams.Stream_Element_Offset (Hdr.Nlmsg_Len)));
    end Add_Policy;
 
@@ -171,21 +174,21 @@ is
       Sa.sel.prefixlen_s := 32;
       Sa.sel.daddr.a4    := Sa.id.daddr.a4;
       Sa.sel.prefixlen_d := 32;
-      Sa.reqid           := Interfaces.C.unsigned (Reqid);
-      Sa.id.spi          := Interfaces.C.unsigned (Spi);
+      Sa.reqid           := C.unsigned (Reqid);
+      Sa.id.spi          := C.unsigned (Spi);
       Sa.id.proto        := Anet.Constants.IPPROTO_ESP;
       Sa.family          := 2;
       Sa.replay_window   := 32;
 
       if Lifetime_Soft /= 0 then
          Sa.lft.soft_add_expires_seconds
-           := Interfaces.C.Extensions.unsigned_long_long (Lifetime_Soft);
+           := C.Extensions.unsigned_long_long (Lifetime_Soft);
       else
          Sa.lft.soft_add_expires_seconds := XFRM_INF;
       end if;
       if Lifetime_Hard /= 0 then
          Sa.lft.hard_add_expires_seconds
-           := Interfaces.C.Extensions.unsigned_long_long (Lifetime_Hard);
+           := C.Extensions.unsigned_long_long (Lifetime_Hard);
       else
          Sa.lft.hard_add_expires_seconds := XFRM_INF;
       end if;
@@ -207,7 +210,7 @@ is
       begin
          Enc_Rta.Rta_Type := xfrm_h.xfrm_attr_type_t'Pos
            (xfrm_h.XFRMA_ALG_CRYPT);
-         Enc_Rta.Rta_Len  := Interfaces.C.unsigned_short
+         Enc_Rta.Rta_Len  := C.unsigned_short
            (Rta_Length (Len => xfrm_h.xfrm_algo'Object_Size / 8)
             + Enc_Key'Length);
 
@@ -216,7 +219,7 @@ is
 
          Enc_Algo.alg_key_len := Enc_Key'Length * 8;
          Enc_Algo.alg_name (Enc_Algo.alg_name'First .. Enc_Alg'Length)
-           := Interfaces.C.To_C (Enc_Alg);
+           := C.To_C (Enc_Alg);
          C_Memcpy (Dst => Enc_Algo.alg_key'Address,
                    Src => Enc_Key'Address,
                    Len => Enc_Key'Length);
@@ -240,7 +243,7 @@ is
       begin
          Int_Rta.Rta_Type := xfrm_h.xfrm_attr_type_t'Pos
            (xfrm_h.XFRMA_ALG_AUTH);
-         Int_Rta.Rta_Len  := Interfaces.C.unsigned_short
+         Int_Rta.Rta_Len  := C.unsigned_short
            (Rta_Length (Len => xfrm_h.xfrm_algo'Object_Size / 8)
             + Int_Key'Length);
 
@@ -249,13 +252,14 @@ is
 
          Int_Algo.alg_key_len := Int_Key'Length * 8;
          Int_Algo.alg_name (Int_Algo.alg_name'First .. Int_Alg'Length)
-           := Interfaces.C.To_C (Int_Alg);
+           := C.To_C (Int_Alg);
          C_Memcpy (Dst => Int_Algo.alg_key'Address,
                    Src => Int_Key'Address,
                    Len => Int_Key'Length);
       end Integrity_Algorithm;
 
-      Socket.Send_Ack (Item => Buffer (Buffer'First ..
+      Socket.Send_Ack (Err_Prefix => "Unable to add state",
+                       Item       => Buffer (Buffer'First ..
                          Ada.Streams.Stream_Element_Offset (Hdr.Nlmsg_Len)));
    end Add_State;
 
@@ -298,7 +302,8 @@ is
       Policy_Id.sel.prefixlen_s := 32;
       Policy_Id.dir             := Dir_Map (Direction);
 
-      Socket.Send_Ack (Item => Buffer (Buffer'First ..
+      Socket.Send_Ack (Err_Prefix => "Unable to delete policy",
+                       Item       => Buffer (Buffer'First ..
                          Ada.Streams.Stream_Element_Offset (Hdr.Nlmsg_Len)));
    end Delete_Policy;
 
@@ -332,10 +337,11 @@ is
                 Src => Dst'Address,
                 Len => Dst'Length);
       Sa_Id.proto    := Anet.Constants.IPPROTO_ESP;
-      Sa_Id.spi      := Interfaces.C.unsigned (Spi);
+      Sa_Id.spi      := C.unsigned (Spi);
       Sa_Id.family   := 2;
 
-      Socket.Send_Ack (Item => Buffer (Buffer'First ..
+      Socket.Send_Ack (Err_Prefix => "Unable to delete state",
+                       Item       => Buffer (Buffer'First ..
                          Ada.Streams.Stream_Element_Offset (Hdr.Nlmsg_Len)));
    end Delete_State;
 
@@ -351,7 +357,8 @@ is
       Hdr.Nlmsg_Type  := Xfrm_Msg_Type'Enum_Rep (XFRM_MSG_FLUSHPOLICY);
       Hdr.Nlmsg_Len   := Interfaces.Unsigned_32 (Nlmsg_Length (Len => 0));
 
-      Socket.Send_Ack (Item => Buffer (Buffer'First ..
+      Socket.Send_Ack (Err_Prefix => "Unable to flush SPD",
+                       Item       => Buffer (Buffer'First ..
                          Ada.Streams.Stream_Element_Offset (Hdr.Nlmsg_Len)));
    end Flush_Policies;
 
@@ -380,7 +387,8 @@ is
 
       Flush.proto := IPSEC_PROTO_ANY;
 
-      Socket.Send_Ack (Item => Buffer (Buffer'First ..
+      Socket.Send_Ack (Err_Prefix => "Unable to flush SAD",
+                       Item       => Buffer (Buffer'First ..
                          Ada.Streams.Stream_Element_Offset (Hdr.Nlmsg_Len)));
    end Flush_States;
 
@@ -397,8 +405,9 @@ is
    -------------------------------------------------------------------------
 
    procedure Send_Ack
-     (Socket : Xfrm_Socket_Type;
-      Item   : Ada.Streams.Stream_Element_Array)
+     (Socket     : Xfrm_Socket_Type;
+      Err_Prefix : String;
+      Item       : Ada.Streams.Stream_Element_Array)
    is
       Buffer : Ada.Streams.Stream_Element_Array (1 .. 1024);
       Last   : Ada.Streams.Stream_Element_Offset;
@@ -430,8 +439,8 @@ is
                for Err'Address use Err_Addr;
             begin
                if Err.Error /= 0 then
-                  raise Xfrm_Error with Interfaces.C.Strings.Value
-                    (C_Strerror (Errnum => -Err.Error));
+                  raise Xfrm_Error with Err_Prefix & " - "
+                    & C.Strings.Value (C_Strerror (Errnum => -Err.Error));
                else
 
                   --  OK.
