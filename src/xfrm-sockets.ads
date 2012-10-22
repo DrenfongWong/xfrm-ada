@@ -1,5 +1,7 @@
 with Ada.Streams;
 
+with Interfaces;
+
 with Anet.Sockets.Netlink;
 
 package Xfrm.Sockets
@@ -49,7 +51,7 @@ is
       Src           : Anet.IPv4_Addr_Type;
       Dst           : Anet.IPv4_Addr_Type;
       Reqid         : Positive;
-      Spi           : Positive;
+      Spi           : Interfaces.Unsigned_32;
       Enc_Key       : Anet.Byte_Array;
       Enc_Alg       : String;
       Int_Key       : Anet.Byte_Array;
@@ -63,7 +65,7 @@ is
    procedure Delete_State
      (Socket : Xfrm_Socket_Type;
       Dst    : Anet.IPv4_Addr_Type;
-      Spi    : Positive);
+      Spi    : Interfaces.Unsigned_32);
    --  Delete SA state with given parameters.
 
    procedure Flush_States (Socket : Xfrm_Socket_Type);

@@ -128,7 +128,7 @@ is
       Src           : Anet.IPv4_Addr_Type;
       Dst           : Anet.IPv4_Addr_Type;
       Reqid         : Positive;
-      Spi           : Positive;
+      Spi           : Interfaces.Unsigned_32;
       Enc_Key       : Anet.Byte_Array;
       Enc_Alg       : String;
       Int_Key       : Anet.Byte_Array;
@@ -313,7 +313,7 @@ is
    procedure Delete_State
      (Socket : Xfrm_Socket_Type;
       Dst    : Anet.IPv4_Addr_Type;
-      Spi    : Positive)
+      Spi    : Interfaces.Unsigned_32)
    is
       Buffer : Ada.Streams.Stream_Element_Array (1 .. 40) := (others => 0);
       Hdr    : aliased Nlmsghdr_Type;
