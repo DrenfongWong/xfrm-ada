@@ -20,6 +20,8 @@
 --  executable file might be covered by the GNU Public License.
 --
 
+pragma License (Modified_GPL);
+
 package Xfrm
 is
 
