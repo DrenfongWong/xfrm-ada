@@ -1,6 +1,6 @@
 --
---  Copyright (C) 2012 secunet Security Networks AG
---  Copyright (C) 2012 Reto Buerki <reet@codelabs.ch>
+--  Copyright (C) 2012-2013 secunet Security Networks AG
+--  Copyright (C) 2012-2013 Reto Buerki <reet@codelabs.ch>
 --
 --  This program is free software; you can redistribute it and/or modify it
 --  under the terms of the GNU General Public License as published by the
@@ -182,6 +182,7 @@ is
    XFRM_POLICY_ALLOW : constant := 0;
 
    XFRM_MODE_TRANSPORT : constant := 0;
+   XFRM_MODE_TUNNEL    : constant := 1;
 
    XFRM_POLICY_IN  : constant := 0;
    XFRM_POLICY_OUT : constant := 1;

@@ -1,6 +1,6 @@
 --
---  Copyright (C) 2012 secunet Security Networks AG
---  Copyright (C) 2012 Reto Buerki <reet@codelabs.ch>
+--  Copyright (C) 2012-2013 secunet Security Networks AG
+--  Copyright (C) 2012-2013 Reto Buerki <reet@codelabs.ch>
 --
 --  This program is free software; you can redistribute it and/or modify it
 --  under the terms of the GNU General Public License as published by the
@@ -30,7 +30,8 @@ is
 begin
    Sock.Init;
    Sock.Add_Policy
-     (Src       => (192, 168, 1, 1),
+     (Mode      => Xfrm.Sockets.Mode_Transport,
+      Src       => (192, 168, 1, 1),
       Dst       => (192, 168, 2, 1),
       Reqid     => 1,
       Direction => Xfrm.Sockets.Direction_Out);

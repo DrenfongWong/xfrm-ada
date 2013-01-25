@@ -1,6 +1,6 @@
 --
---  Copyright (C) 2012 secunet Security Networks AG
---  Copyright (C) 2012 Reto Buerki <reet@codelabs.ch>
+--  Copyright (C) 2012-2013 secunet Security Networks AG
+--  Copyright (C) 2012-2013 Reto Buerki <reet@codelabs.ch>
 --
 --  This program is free software; you can redistribute it and/or modify it
 --  under the terms of the GNU General Public License as published by the
@@ -35,6 +35,11 @@ is
       Direction_Out);
    --  Policy directions.
 
+   type Mode_Type is
+     (Mode_Transport,
+      Mode_Tunnel);
+   --  IPsec modes.
+
    type Xfrm_Socket_Type is new
      Anet.Sockets.Netlink.Raw_Socket_Type with private;
    --  Netlink/XFRM socket.
@@ -52,6 +57,7 @@ is
 
    procedure Add_Policy
      (Socket    : Xfrm_Socket_Type;
+      Mode      : Mode_Type;
       Src       : Anet.IPv4_Addr_Type;
       Dst       : Anet.IPv4_Addr_Type;
       Reqid     : Interfaces.Unsigned_32;
@@ -70,6 +76,7 @@ is
 
    procedure Add_State
      (Socket        : Xfrm_Socket_Type;
+      Mode          : Mode_Type;
       Src           : Anet.IPv4_Addr_Type;
       Dst           : Anet.IPv4_Addr_Type;
       Reqid         : Interfaces.Unsigned_32;

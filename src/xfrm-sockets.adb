@@ -1,6 +1,6 @@
 --
---  Copyright (C) 2012 secunet Security Networks AG
---  Copyright (C) 2012 Reto Buerki <reet@codelabs.ch>
+--  Copyright (C) 2012-2013 secunet Security Networks AG
+--  Copyright (C) 2012-2013 Reto Buerki <reet@codelabs.ch>
 --
 --  This program is free software; you can redistribute it and/or modify it
 --  under the terms of the GNU General Public License as published by the
@@ -60,10 +60,15 @@ is
          Direction_Out => Xfrm.Thin.XFRM_POLICY_OUT,
          Direction_Fwd => Xfrm.Thin.XFRM_POLICY_FWD);
 
+   Mode_Map : constant array (Mode_Type) of C.unsigned_char
+     := (Mode_Transport => XFRM_MODE_TRANSPORT,
+         Mode_Tunnel    => XFRM_MODE_TUNNEL);
+
    -------------------------------------------------------------------------
 
    procedure Add_Policy
      (Socket    : Xfrm_Socket_Type;
+      Mode      : Mode_Type;
       Src       : Anet.IPv4_Addr_Type;
       Dst       : Anet.IPv4_Addr_Type;
       Reqid     : Interfaces.Unsigned_32;
@@ -136,7 +141,7 @@ is
       Tmpl.aalgos   := not 0;
       Tmpl.ealgos   := not 0;
       Tmpl.calgos   := not 0;
-      Tmpl.mode     := XFRM_MODE_TRANSPORT;
+      Tmpl.mode     := Mode_Map (Mode);
       Tmpl.family   := 2;
 
       Socket.Send_Ack (Err_Prefix => "Unable to add policy",
@@ -148,6 +153,7 @@ is
 
    procedure Add_State
      (Socket        : Xfrm_Socket_Type;
+      Mode          : Mode_Type;
       Src           : Anet.IPv4_Addr_Type;
       Dst           : Anet.IPv4_Addr_Type;
       Reqid         : Interfaces.Unsigned_32;
@@ -203,6 +209,7 @@ is
         (Input => Spi));
       Sa.id.proto        := Anet.Constants.IPPROTO_ESP;
       Sa.family          := 2;
+      Sa.mode            := Mode_Map (Mode);
       Sa.replay_window   := 32;
 
       if Lifetime_Soft /= 0 then
