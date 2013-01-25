@@ -29,8 +29,11 @@ is
    Sock : Xfrm.Sockets.Xfrm_Socket_Type;
 begin
    Sock.Init;
-   Sock.Delete_Policy (Sel_Src   => (192, 168, 1, 1),
-                       Sel_Dst   => (192, 168, 2, 1),
-                       Direction => Xfrm.Sockets.Direction_Out);
+   Sock.Delete_Policy
+     (Sel_Src        => (192, 168, 1, 1),
+      Sel_Src_Prefix => 32,
+      Sel_Dst        => (192, 168, 2, 1),
+      Sel_Dst_Prefix => 32,
+      Direction      => Xfrm.Sockets.Direction_Out);
    Ada.Text_IO.Put_Line ("OK");
 end Del_Policy;

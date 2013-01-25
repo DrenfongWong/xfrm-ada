@@ -40,6 +40,9 @@ is
       Mode_Tunnel);
    --  IPsec modes.
 
+   type Prefix_Type is new Natural range 0 .. 32;
+   --  Selector network prefix length.
+
    type Xfrm_Socket_Type is new
      Anet.Sockets.Netlink.Raw_Socket_Type with private;
    --  Netlink/XFRM socket.
@@ -56,19 +59,23 @@ is
    --  was not successful.
 
    procedure Add_Policy
-     (Socket    : Xfrm_Socket_Type;
-      Mode      : Mode_Type;
-      Sel_Src   : Anet.IPv4_Addr_Type;
-      Sel_Dst   : Anet.IPv4_Addr_Type;
-      Reqid     : Interfaces.Unsigned_32;
-      Direction : Direction_Type);
+     (Socket         : Xfrm_Socket_Type;
+      Mode           : Mode_Type;
+      Sel_Src        : Anet.IPv4_Addr_Type;
+      Sel_Src_Prefix : Prefix_Type;
+      Sel_Dst        : Anet.IPv4_Addr_Type;
+      Sel_Dst_Prefix : Prefix_Type;
+      Reqid          : Interfaces.Unsigned_32;
+      Direction      : Direction_Type);
    --  Add XFRM policy with given parameters.
 
    procedure Delete_Policy
-     (Socket    : Xfrm_Socket_Type;
-      Sel_Src   : Anet.IPv4_Addr_Type;
-      Sel_Dst   : Anet.IPv4_Addr_Type;
-      Direction : Direction_Type);
+     (Socket         : Xfrm_Socket_Type;
+      Sel_Src        : Anet.IPv4_Addr_Type;
+      Sel_Src_Prefix : Prefix_Type;
+      Sel_Dst        : Anet.IPv4_Addr_Type;
+      Sel_Dst_Prefix : Prefix_Type;
+      Direction      : Direction_Type);
    --  Delete XFRM policy.
 
    procedure Flush_Policies (Socket : Xfrm_Socket_Type);

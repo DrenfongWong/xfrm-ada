@@ -67,12 +67,14 @@ is
    -------------------------------------------------------------------------
 
    procedure Add_Policy
-     (Socket    : Xfrm_Socket_Type;
-      Mode      : Mode_Type;
-      Sel_Src   : Anet.IPv4_Addr_Type;
-      Sel_Dst   : Anet.IPv4_Addr_Type;
-      Reqid     : Interfaces.Unsigned_32;
-      Direction : Direction_Type)
+     (Socket         : Xfrm_Socket_Type;
+      Mode           : Mode_Type;
+      Sel_Src        : Anet.IPv4_Addr_Type;
+      Sel_Src_Prefix : Prefix_Type;
+      Sel_Dst        : Anet.IPv4_Addr_Type;
+      Sel_Dst_Prefix : Prefix_Type;
+      Reqid          : Interfaces.Unsigned_32;
+      Direction      : Direction_Type)
    is
       use type Interfaces.Unsigned_32;
 
@@ -114,8 +116,8 @@ is
                 Src => Sel_Dst'Address,
                 Len => Sel_Dst'Length);
       Policy.sel.family      := 2;
-      Policy.sel.prefixlen_d := 32;
-      Policy.sel.prefixlen_s := 32;
+      Policy.sel.prefixlen_s := C.unsigned_char (Sel_Src_Prefix);
+      Policy.sel.prefixlen_d := C.unsigned_char (Sel_Dst_Prefix);
       Policy.priority        := 3843;
       Policy.action          := XFRM_POLICY_ALLOW;
       Policy.share           := Xfrm_Share_Type'Pos (XFRM_SHARE_ANY);
@@ -298,10 +300,12 @@ is
    -------------------------------------------------------------------------
 
    procedure Delete_Policy
-     (Socket    : Xfrm_Socket_Type;
-      Sel_Src   : Anet.IPv4_Addr_Type;
-      Sel_Dst   : Anet.IPv4_Addr_Type;
-      Direction : Direction_Type)
+     (Socket         : Xfrm_Socket_Type;
+      Sel_Src        : Anet.IPv4_Addr_Type;
+      Sel_Src_Prefix : Prefix_Type;
+      Sel_Dst        : Anet.IPv4_Addr_Type;
+      Sel_Dst_Prefix : Prefix_Type;
+      Direction      : Direction_Type)
    is
       Buffer : Ada.Streams.Stream_Element_Array (1 .. 80) := (others => 0);
       Hdr    : aliased Nlmsghdr_Type;
@@ -330,8 +334,8 @@ is
                 Src => Sel_Dst'Address,
                 Len => Sel_Dst'Length);
       Policy_Id.sel.family      := 2;
-      Policy_Id.sel.prefixlen_d := 32;
-      Policy_Id.sel.prefixlen_s := 32;
+      Policy_Id.sel.prefixlen_s := C.unsigned_char (Sel_Src_Prefix);
+      Policy_Id.sel.prefixlen_d := C.unsigned_char (Sel_Dst_Prefix);
       Policy_Id.dir             := Dir_Map (Direction);
 
       Socket.Send_Ack (Err_Prefix => "Unable to delete policy",
