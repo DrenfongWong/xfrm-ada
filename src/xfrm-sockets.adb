@@ -69,8 +69,8 @@ is
    procedure Add_Policy
      (Socket    : Xfrm_Socket_Type;
       Mode      : Mode_Type;
-      Src       : Anet.IPv4_Addr_Type;
-      Dst       : Anet.IPv4_Addr_Type;
+      Sel_Src   : Anet.IPv4_Addr_Type;
+      Sel_Dst   : Anet.IPv4_Addr_Type;
       Reqid     : Interfaces.Unsigned_32;
       Direction : Direction_Type)
    is
@@ -108,11 +108,11 @@ is
       --  Policy
 
       C_Memcpy (Dst => Policy.sel.saddr.a4'Address,
-                Src => Src'Address,
-                Len => Src'Length);
+                Src => Sel_Src'Address,
+                Len => Sel_Src'Length);
       C_Memcpy (Dst => Policy.sel.daddr.a4'Address,
-                Src => Dst'Address,
-                Len => Dst'Length);
+                Src => Sel_Dst'Address,
+                Len => Sel_Dst'Length);
       Policy.sel.family      := 2;
       Policy.sel.prefixlen_d := 32;
       Policy.sel.prefixlen_s := 32;
@@ -299,8 +299,8 @@ is
 
    procedure Delete_Policy
      (Socket    : Xfrm_Socket_Type;
-      Src       : Anet.IPv4_Addr_Type;
-      Dst       : Anet.IPv4_Addr_Type;
+      Sel_Src   : Anet.IPv4_Addr_Type;
+      Sel_Dst   : Anet.IPv4_Addr_Type;
       Direction : Direction_Type)
    is
       Buffer : Ada.Streams.Stream_Element_Array (1 .. 80) := (others => 0);
@@ -324,11 +324,11 @@ is
       --  Policy ID
 
       C_Memcpy (Dst => Policy_Id.sel.saddr.a4'Address,
-                Src => Src'Address,
-                Len => Src'Length);
+                Src => Sel_Src'Address,
+                Len => Sel_Src'Length);
       C_Memcpy (Dst => Policy_Id.sel.daddr.a4'Address,
-                Src => Dst'Address,
-                Len => Dst'Length);
+                Src => Sel_Dst'Address,
+                Len => Sel_Dst'Length);
       Policy_Id.sel.family      := 2;
       Policy_Id.sel.prefixlen_d := 32;
       Policy_Id.sel.prefixlen_s := 32;

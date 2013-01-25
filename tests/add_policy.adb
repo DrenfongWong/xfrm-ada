@@ -31,8 +31,8 @@ begin
    Sock.Init;
    Sock.Add_Policy
      (Mode      => Xfrm.Sockets.Mode_Transport,
-      Src       => (192, 168, 1, 1),
-      Dst       => (192, 168, 2, 1),
+      Sel_Src   => (192, 168, 1, 1),
+      Sel_Dst   => (192, 168, 2, 1),
       Reqid     => 1,
       Direction => Xfrm.Sockets.Direction_Out);
    Ada.Text_IO.Put_Line ("OK");

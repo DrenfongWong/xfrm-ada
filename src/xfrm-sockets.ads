@@ -58,16 +58,16 @@ is
    procedure Add_Policy
      (Socket    : Xfrm_Socket_Type;
       Mode      : Mode_Type;
-      Src       : Anet.IPv4_Addr_Type;
-      Dst       : Anet.IPv4_Addr_Type;
+      Sel_Src   : Anet.IPv4_Addr_Type;
+      Sel_Dst   : Anet.IPv4_Addr_Type;
       Reqid     : Interfaces.Unsigned_32;
       Direction : Direction_Type);
    --  Add XFRM policy with given parameters.
 
    procedure Delete_Policy
      (Socket    : Xfrm_Socket_Type;
-      Src       : Anet.IPv4_Addr_Type;
-      Dst       : Anet.IPv4_Addr_Type;
+      Sel_Src   : Anet.IPv4_Addr_Type;
+      Sel_Dst   : Anet.IPv4_Addr_Type;
       Direction : Direction_Type);
    --  Delete XFRM policy.
 
