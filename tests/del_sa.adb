@@ -31,6 +31,8 @@ begin
    Sock.Init;
    Sock.Delete_State (Dst => (192, 168, 2, 1),
                       Spi => 123);
+   Sock.Delete_State (Dst => (192, 168, 2, 1),
+                      Spi => 124);
 
    Ada.Text_IO.Put_Line ("OK");
 end Del_Sa;

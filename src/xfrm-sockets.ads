@@ -84,18 +84,22 @@ is
    --  Flush SPD.
 
    procedure Add_State
-     (Socket        : Xfrm_Socket_Type;
-      Mode          : Mode_Type;
-      Src           : Anet.IPv4_Addr_Type;
-      Dst           : Anet.IPv4_Addr_Type;
-      Reqid         : Interfaces.Unsigned_32;
-      Spi           : Interfaces.Unsigned_32;
-      Enc_Key       : Anet.Byte_Array;
-      Enc_Alg       : String;
-      Int_Key       : Anet.Byte_Array;
-      Int_Alg       : String;
-      Lifetime_Soft : Interfaces.Unsigned_64 := 0;
-      Lifetime_Hard : Interfaces.Unsigned_64 := 0);
+     (Socket         : Xfrm_Socket_Type;
+      Mode           : Mode_Type;
+      Src            : Anet.IPv4_Addr_Type;
+      Dst            : Anet.IPv4_Addr_Type;
+      Sel_Src        : Anet.IPv4_Addr_Type;
+      Sel_Src_Prefix : Prefix_Type;
+      Sel_Dst        : Anet.IPv4_Addr_Type;
+      Sel_Dst_Prefix : Prefix_Type;
+      Reqid          : Interfaces.Unsigned_32;
+      Spi            : Interfaces.Unsigned_32;
+      Enc_Key        : Anet.Byte_Array;
+      Enc_Alg        : String;
+      Int_Key        : Anet.Byte_Array;
+      Int_Alg        : String;
+      Lifetime_Soft  : Interfaces.Unsigned_64 := 0;
+      Lifetime_Hard  : Interfaces.Unsigned_64 := 0);
    --  Add SA with given parameters. The lifetime parameters specify the amount
    --  in seconds of the soft/hard expire timeout of the SA; the default is 0
    --  (= no timeout).
