@@ -73,6 +73,8 @@ is
       Sel_Src_Prefix : Prefix_Type;
       Sel_Dst        : Anet.IPv4_Addr_Type;
       Sel_Dst_Prefix : Prefix_Type;
+      Tmpl_Src       : Anet.IPv4_Addr_Type;
+      Tmpl_Dst       : Anet.IPv4_Addr_Type;
       Reqid          : Interfaces.Unsigned_32;
       Direction      : Direction_Type)
    is
@@ -145,6 +147,12 @@ is
       Tmpl.calgos   := not 0;
       Tmpl.mode     := Mode_Map (Mode);
       Tmpl.family   := 2;
+      C_Memcpy (Dst => Tmpl.saddr.a4'Address,
+                Src => Tmpl_Src'Address,
+                Len => Tmpl_Src'Length);
+      C_Memcpy (Dst => Tmpl.id.daddr.a4'Address,
+                Src => Tmpl_Dst'Address,
+                Len => Tmpl_Dst'Length);
 
       Socket.Send_Ack (Err_Prefix => "Unable to add policy",
                        Item       => Buffer (Buffer'First ..

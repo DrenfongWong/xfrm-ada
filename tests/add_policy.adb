@@ -29,13 +29,31 @@ is
    Sock : Xfrm.Sockets.Xfrm_Socket_Type;
 begin
    Sock.Init;
+
+   --  Transport mode
+
    Sock.Add_Policy
      (Mode           => Xfrm.Sockets.Mode_Transport,
       Sel_Src        => (192, 168, 1, 1),
       Sel_Src_Prefix => 32,
       Sel_Dst        => (192, 168, 2, 1),
       Sel_Dst_Prefix => 32,
+      Tmpl_Src       => (0, 0, 0, 0),
+      Tmpl_Dst       => (0, 0, 0, 0),
       Reqid          => 1,
       Direction      => Xfrm.Sockets.Direction_Out);
+
+   --  Tunnel mode
+
+   Sock.Add_Policy
+     (Mode           => Xfrm.Sockets.Mode_Tunnel,
+      Sel_Src        => (10, 1, 0, 0),
+      Sel_Src_Prefix => 16,
+      Sel_Dst        => (10, 2, 0, 0),
+      Sel_Dst_Prefix => 16,
+      Tmpl_Src       => (192, 168, 0, 1),
+      Tmpl_Dst       => (192, 168, 0, 2),
+      Reqid          => 2,
+      Direction      => Xfrm.Sockets.Direction_In);
    Ada.Text_IO.Put_Line ("OK");
 end Add_Policy;

@@ -65,6 +65,8 @@ is
       Sel_Src_Prefix : Prefix_Type;
       Sel_Dst        : Anet.IPv4_Addr_Type;
       Sel_Dst_Prefix : Prefix_Type;
+      Tmpl_Src       : Anet.IPv4_Addr_Type;
+      Tmpl_Dst       : Anet.IPv4_Addr_Type;
       Reqid          : Interfaces.Unsigned_32;
       Direction      : Direction_Type);
    --  Add XFRM policy with given parameters.
