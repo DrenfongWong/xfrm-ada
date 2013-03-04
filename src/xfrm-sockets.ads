@@ -102,13 +102,14 @@ is
       Lifetime_Hard  : Interfaces.Unsigned_64 := 0);
    --  Add SA with given parameters. The lifetime parameters specify the amount
    --  in seconds of the soft/hard expire timeout of the SA; the default is 0
-   --  (= no timeout).
+   --  (= no timeout). The SPI must be provided in network byte order.
 
    procedure Delete_State
      (Socket : Xfrm_Socket_Type;
       Dst    : Anet.IPv4_Addr_Type;
       Spi    : Interfaces.Unsigned_32);
-   --  Delete SA state with given parameters.
+   --  Delete SA state with given parameters. The SPI must be provided in
+   --  network byte order.
 
    procedure Flush_States (Socket : Xfrm_Socket_Type);
    --  Flush SAD.
